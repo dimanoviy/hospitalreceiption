@@ -1,10 +1,13 @@
 package se.rocketscien.hospitalreception;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.rocketscien.hospitalreception.pojo.Patient;
+import se.rocketscien.hospitalreception.pojo.PatientDto;
 import se.rocketscien.hospitalreception.pojo.PatientRepository;
+import se.rocketscien.hospitalreception.PatientService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -15,49 +18,27 @@ import java.util.Optional;
 @RequestMapping("/patients")
 public class HospitalreceptionController {
     @Autowired
-    private PatientRepository patientRepository;
-
-    @GetMapping
-    public ResponseEntity<List<Patient>> listAllPatients() {
-        List<Patient> patients = (List<Patient>) patientRepository.findAll();
-        return ResponseEntity.ok().body(patients);
-    }
+    private PatientService patientService;
 
     @GetMapping(value = "/{patientId}")
     public ResponseEntity<Patient> getPatient(@PathVariable("patientId") Long patientId) {
-        Optional<Patient> patient = patientRepository.findById(patientId);
-        if (!patient.isPresent()) {
-            throw new EntityNotFoundException("id: " + patientId);
-        }
-        return ResponseEntity.ok().body(patient.get());
+        Patient patient = patientService.getPatient(patientId);
+        return ResponseEntity.ok().body(patient);
     }
 
     @PostMapping
     public ResponseEntity<Patient> createPatient(@RequestBody @Valid Patient patient) {
-        Patient patientReturned = patientRepository.save(patient);
-        return ResponseEntity.status(201).body(patientReturned);
+        return ResponseEntity.status(HttpStatus.CREATED).body(patientService.createPatient(patient));
     }
 
     @PutMapping(value = "/{patientId}")
     public ResponseEntity<Patient> updatePatient(@RequestBody @Valid Patient patient,
                                                  @PathVariable("patientId") Long patientId) {
-        Optional<Patient> patient1 = patientRepository.findById(patientId);
-        Patient oldPerson = patient1.get();
-        oldPerson.setLastName(patient.getLastName());
-        oldPerson.setMiddleName(patient.getMiddleName());
-        oldPerson.setFirstName(patient.getFirstName());
-        return ResponseEntity.ok().body(patientRepository.save(oldPerson));
+        return ResponseEntity.ok().body(patientService.updatePatient(patient, patientId));
     }
 
     @DeleteMapping(value = "/{patientId}")
     public ResponseEntity<Patient> deletePatient(@PathVariable("patientId") Long patientId) {
-        Optional<Patient> patient = patientRepository.findById(patientId);
-        patientRepository.deleteById(patientId);
-        return ResponseEntity.ok().body(patient.get());
+        return ResponseEntity.ok().body(patientService.deletePatient(patientId));
     }
-
-//    @PostMapping()
-//    private Patient searchPatient(Patient patient) {
-//        return patientRepository.searchByLastNameAndMiddleNameAndFirstName(patient.getLastName(), patient.getMiddleName(), patient.getFirstName());
-//    }
 }

@@ -40,6 +40,4 @@ public class Patient  {
         this.firstName = firstName;
     }
 
-
 }
-

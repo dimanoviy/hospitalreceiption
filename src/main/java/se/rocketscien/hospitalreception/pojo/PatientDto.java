@@ -21,4 +21,8 @@ public class PatientDto {
         this.middleName = middleName;
         this.firstName = firstName;
     }
+
+    public Long getPatientId() {
+        return patientId;
+    }
 }

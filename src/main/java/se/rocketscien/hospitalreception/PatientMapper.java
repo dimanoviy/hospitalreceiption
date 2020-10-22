@@ -5,7 +5,7 @@ import org.mapstruct.factory.Mappers;
 import se.rocketscien.hospitalreception.pojo.Patient;
 import se.rocketscien.hospitalreception.pojo.PatientDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PatientMapper {
     PatientMapper INSTANCE = Mappers.getMapper(PatientMapper.class);
 

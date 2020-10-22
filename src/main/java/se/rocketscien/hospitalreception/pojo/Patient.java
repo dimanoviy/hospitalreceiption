@@ -18,6 +18,18 @@ public class Patient  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long patientId;
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
     @NotNull
     private String lastName;
 
@@ -40,4 +52,15 @@ public class Patient  {
         this.firstName = firstName;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 }

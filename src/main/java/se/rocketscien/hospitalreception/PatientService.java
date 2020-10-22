@@ -1,17 +1,14 @@
 package se.rocketscien.hospitalreception;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import se.rocketscien.hospitalreception.pojo.Patient;
 import se.rocketscien.hospitalreception.pojo.PatientRepository;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -39,11 +36,14 @@ public class PatientService {
 
     Patient updatePatient(Patient patient, Long patientId) {
         Optional<Patient> patient1 = patientRepository.findById(patientId);
-        Patient oldPatient = patient1.get();
-        oldPatient.setLastName(patient.getLastName());
-        oldPatient.setMiddleName(patient.getMiddleName());
-        oldPatient.setFirstName(patient.getFirstName());
-        return oldPatient;
+        if (patient1.isPresent()){
+            Patient oldPatient = patient1.get();
+            oldPatient.setLastName(patient.getLastName());
+            oldPatient.setMiddleName(patient.getMiddleName());
+            oldPatient.setFirstName(patient.getFirstName());
+            return oldPatient;
+        }
+        throw new NoSuchElementException();
     }
 
     Patient deletePatient(Long patientId) {

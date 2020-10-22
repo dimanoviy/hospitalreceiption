@@ -1,40 +1,36 @@
 package se.rocketscien.hospitalreception;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.rocketscien.hospitalreception.pojo.Patient;
 import se.rocketscien.hospitalreception.pojo.PatientDto;
-import se.rocketscien.hospitalreception.pojo.PatientRepository;
-import se.rocketscien.hospitalreception.PatientService;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/patients")
+@RequiredArgsConstructor
 public class HospitalreceptionController {
-    @Autowired
-    private PatientService patientService;
+    private final PatientService patientService;
+    private final PatientMapper patientMapper;
 
     @GetMapping(value = "/{patientId}")
-    public ResponseEntity<Patient> getPatient(@PathVariable("patientId") Long patientId) {
-        Patient patient = patientService.getPatient(patientId);
+    public ResponseEntity<PatientDto> getPatient(@PathVariable("patientId") Long patientId) {
+        PatientDto patient = patientMapper.patientToPatientDto(patientService.getPatient(patientId));
         return ResponseEntity.ok().body(patient);
     }
 
     @PostMapping
-    public ResponseEntity<Patient> createPatient(@RequestBody @Valid Patient patient) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(patientService.createPatient(patient));
+    public ResponseEntity<Patient> createPatient(@RequestBody @Valid PatientDto patientDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(patientService.createPatient(patientMapper.patientDtoToPatient(patientDto)));
     }
 
     @PutMapping(value = "/{patientId}")
-    public ResponseEntity<Patient> updatePatient(@RequestBody @Valid Patient patient,
+    public ResponseEntity<Patient> updatePatient(@RequestBody @Valid PatientDto patientDto,
                                                  @PathVariable("patientId") Long patientId) {
-        return ResponseEntity.ok().body(patientService.updatePatient(patient, patientId));
+        return ResponseEntity.ok().body(patientService.updatePatient(patientMapper.patientDtoToPatient(patientDto), patientId));
     }
 
     @DeleteMapping(value = "/{patientId}")

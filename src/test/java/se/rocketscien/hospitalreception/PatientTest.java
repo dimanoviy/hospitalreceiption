@@ -1,4 +1,4 @@
-package se.rocketscien.hospitalreception.pojo;
+package se.rocketscien.hospitalreception;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import se.rocketscien.hospitalreception.pojo.PatientDto;
+import se.rocketscien.hospitalreception.pojo.PatientRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +28,9 @@ class PatientTest {
     void createPatientTest() {
         String lastName = "Jordan";
         String firstName = "Michael";
-        PatientDto patient = new PatientDto(lastName, "A.", firstName);
-        ResponseEntity<Patient> response = testRestTemplate.postForEntity("http://localhost:8080/patients",
-                patient, Patient.class);
+        PatientDto patient = PatientDto.builder().lastName(lastName).firstName(firstName).build();
+        ResponseEntity<PatientDto> response = testRestTemplate.postForEntity("http://localhost:8080/patients",
+                patient, PatientDto.class);
         assertThat(response.getBody().getLastName()).isEqualTo(lastName);
         assertThat(response.getBody().getFirstName()).isEqualTo(firstName);
         assertThat(response.getBody().getPatientId()).isNotNull();
@@ -37,37 +39,33 @@ class PatientTest {
     @Test
     void readPatient() {
         createTestPatient("Lastovikh", "Middlovich", "Nam");
-        ResponseEntity<List<Patient>> response = testRestTemplate.exchange("/patients", HttpMethod.GET,
-                null, new ParameterizedTypeReference<List<Patient>>() {
+        ResponseEntity<List<PatientDto>> response = testRestTemplate.exchange("/patients", HttpMethod.GET,
+                null, new ParameterizedTypeReference<List<PatientDto>>() {
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<Patient> patients = response.getBody();
+        List<PatientDto> patients = response.getBody();
         assertThat(patients).hasSizeGreaterThan(0);
     }
 
     @Test
     void updatePatientTest() {
-        Patient patient = new Patient("Very", "Good", "Man");
-        Patient patientBad = new Patient("Very", "Bad", "Man");
+        PatientDto patient = new PatientDto("Very", "Good", "Man");
+        PatientDto patientBad = new PatientDto("Very", "Bad", "Man");
         long id = createTestPatient(patient).getPatientId();
         testRestTemplate.put("/patients/{id}", patientBad, id);
-        assertThat(testRestTemplate.getForObject("/patients/{id}", Patient.class, id)).isEqualTo(patientBad);
+        assertThat(testRestTemplate.getForObject("/patients/{id}", PatientDto.class, id)).isEqualTo(patientBad);
     }
 
     @Test
     void deletePatientTest() {
-        Patient patient = new Patient("Sorry", "youllbe", "Lost");
+        PatientDto patient = new PatientDto("Sorry", "youllbe", "Lost");
         long id = createTestPatient(patient).getPatientId();
         testRestTemplate.delete("/patients/{id}", id);
         assertThat(patientRepository.findById(id)).isEqualTo(Optional.empty());
     }
 
-    private Patient createTestPatient(String lastName, String middleName, String firstName) {
-        Patient patient = new Patient(lastName, middleName, firstName);
-        return patientRepository.save(patient);
-    }
-
-    private Patient createTestPatient(Patient patient) {
-        return patientRepository.save(patient);
+    private PatientDto createTestPatient(String lastName, String middleName, String firstName) {
+        PatientDto patientDto = PatientDto.builder().lastName(lastName).middleName(middleName).firstName(firstName).build();
+        return patientRepository.save((patientDto));
     }
 }

@@ -1,28 +1,20 @@
 package se.rocketscien.hospitalreception.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Value;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
+@Value
+@Builder
 public class PatientDto {
-    private Long patientId;
+    Long patientId;
+    String lastName;
+    String middleName;
+    String firstName;
+    LocalDate birthDate;
 
-    private String lastName;
-
-    private String middleName;
-
-    private String firstName;
-
-    public PatientDto(@NotNull String lastName, @NotNull String middleName, @NotNull String firstName) {
-        this.lastName = lastName;
-        this.middleName = middleName;
-        this.firstName = firstName;
-    }
-
-    public Long getPatientId() {
-        return patientId;
-    }
 }

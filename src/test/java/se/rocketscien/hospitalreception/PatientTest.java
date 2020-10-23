@@ -38,7 +38,6 @@ class PatientTest {
 
     @Test
     void readPatient() {
-        PatientDto.builder().lastName("Lastovikh").middleName("Middlovich").firstName("Nam").build();
         ResponseEntity<List<PatientDto>> response = testRestTemplate.exchange("/patients", HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<PatientDto>>() {
                 });

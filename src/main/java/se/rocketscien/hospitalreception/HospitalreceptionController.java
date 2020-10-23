@@ -28,13 +28,13 @@ public class HospitalreceptionController {
     }
 
     @PutMapping(value = "/{patientId}")
-    public ResponseEntity<Patient> updatePatient(@RequestBody @Valid PatientDto patientDto,
+    public ResponseEntity<PatientDto> updatePatient(@RequestBody @Valid PatientDto patientDto,
                                                  @PathVariable("patientId") Long patientId) {
-        return ResponseEntity.ok().body(patientService.updatePatient(patientMapper.patientDtoToPatient(patientDto), patientId));
+        return ResponseEntity.ok().body(patientMapper.patientToPatientDto(patientService.updatePatient(patientMapper.patientDtoToPatient(patientDto), patientId)));
     }
 
     @DeleteMapping(value = "/{patientId}")
-    public ResponseEntity<Patient> deletePatient(@PathVariable("patientId") Long patientId) {
-        return ResponseEntity.ok().body(patientService.deletePatient(patientId));
+    public ResponseEntity<PatientDto> deletePatient(@PathVariable("patientId") Long patientId) {
+        return ResponseEntity.ok().body(patientMapper.patientToPatientDto(patientService.deletePatient(patientId)));
     }
 }

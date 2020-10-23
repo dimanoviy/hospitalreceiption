@@ -38,7 +38,7 @@ class PatientTest {
 
     @Test
     void readPatient() {
-        createTestPatient("Lastovikh", "Middlovich", "Nam");
+        PatientDto.builder().lastName("Lastovikh").middleName("Middlovich").firstName("Nam").build();
         ResponseEntity<List<PatientDto>> response = testRestTemplate.exchange("/patients", HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<PatientDto>>() {
                 });
@@ -49,23 +49,18 @@ class PatientTest {
 
     @Test
     void updatePatientTest() {
-        PatientDto patient = new PatientDto("Very", "Good", "Man");
-        PatientDto patientBad = new PatientDto("Very", "Bad", "Man");
-        long id = createTestPatient(patient).getPatientId();
+        PatientDto patient = PatientDto.builder().firstName("Very").middleName("Good").lastName("Man").build();
+        PatientDto patientBad = PatientDto.builder().firstName("Very").middleName("Bad").lastName("Man").build();
+        long id = patient.getPatientId();
         testRestTemplate.put("/patients/{id}", patientBad, id);
         assertThat(testRestTemplate.getForObject("/patients/{id}", PatientDto.class, id)).isEqualTo(patientBad);
     }
 
     @Test
     void deletePatientTest() {
-        PatientDto patient = new PatientDto("Sorry", "youllbe", "Lost");
-        long id = createTestPatient(patient).getPatientId();
+        PatientDto patient = PatientDto.builder().lastName("Sorry").middleName("Youllbe").firstName("Lost").build();
+        long id = patient.getPatientId();
         testRestTemplate.delete("/patients/{id}", id);
         assertThat(patientRepository.findById(id)).isEqualTo(Optional.empty());
-    }
-
-    private PatientDto createTestPatient(String lastName, String middleName, String firstName) {
-        PatientDto patientDto = PatientDto.builder().lastName(lastName).middleName(middleName).firstName(firstName).build();
-        return patientRepository.save((patientDto));
     }
 }

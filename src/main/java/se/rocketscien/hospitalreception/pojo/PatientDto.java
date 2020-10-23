@@ -1,11 +1,8 @@
 package se.rocketscien.hospitalreception.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Value
@@ -16,5 +13,4 @@ public class PatientDto {
     String middleName;
     String firstName;
     LocalDate birthDate;
-
 }

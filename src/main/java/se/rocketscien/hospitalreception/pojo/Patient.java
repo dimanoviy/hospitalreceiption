@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -20,16 +19,8 @@ public class Patient  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long patientId;
-
-    @NotNull
     private String lastName;
-
-    @NotNull
     private String middleName;
-
-    @NotNull
     private String firstName;
-
     private LocalDate birthDate;
-
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import se.rocketscien.hospitalreception.pojo.Patient;
 import se.rocketscien.hospitalreception.pojo.PatientDto;
 
-import java.awt.*;
 import java.util.List;
 
 @RestController
